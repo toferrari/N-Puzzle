@@ -69,17 +69,17 @@ class Board():
 		return self
 
 
-	def get_coordinates_if_moved(self, value, direction):
-		node = self.find(value)
+	def get_coordinates_if_moved(self, direction):
+		x, y, _ = self.blank.values()
 		if direction == Move.UP:
-			node['y'] += 1
+			y -= 1
 		elif direction == Move.DOWN:
-			node['y'] -= 1
+			y += 1
 		elif direction == Move.LEFT:
-			node['x'] += 1
+			x -= 1
 		elif direction == Move.RIGHT:
-			node['x'] -= 1
-		return node
+			x += 1
+		return {'x': x, 'y': y}
 
 
 	@classmethod
