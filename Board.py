@@ -7,7 +7,7 @@ class Board():
 	def __init__(self, array):
 		self.array = array
 		self.size = len(array)
-		self.blank = self.find_blank()
+		self.blank = self.find()
 
 
 	def __repr__(self):
@@ -26,7 +26,7 @@ class Board():
 		return self.array[index]
 
 
-	def find_blank(self, value = 0):
+	def find(self, value = 0):
 		for x, row in enumerate(self.array):
 			for y, cell in enumerate(row):
 				if cell == value:
@@ -67,6 +67,7 @@ class Board():
 				self.array[y][x + 1] = tmp
 				self.blank['x'] += 1
 		return self
+
 
 	@classmethod
 	def get_ordered(cls, array):
