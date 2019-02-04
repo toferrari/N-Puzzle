@@ -7,7 +7,7 @@ class Board():
 	def __init__(self, array):
 		self.array = array
 		self.size = len(array)
-		self.blank = self.find_blank()
+		self.blank = self.find()
 
 
 	def __repr__(self):
@@ -26,9 +26,9 @@ class Board():
 		return self.array[index]
 
 
-	def find_blank(self, value = 0):
-		for x, row in enumerate(self.array):
-			for y, cell in enumerate(row):
+	def find(self, value = 0):
+		for y, row in enumerate(self.array):
+			for x, cell in enumerate(row):
 				if cell == value:
 					return {"x": x, "y": y, "value": value}
 
@@ -67,6 +67,20 @@ class Board():
 				self.array[y][x + 1] = tmp
 				self.blank['x'] += 1
 		return self
+
+
+	def get_coordinates_if_moved(self, value, direction):
+		node = self.find(value)
+		if direction == Move.UP:
+			node['y'] += 1
+		elif direction == Move.DOWN:
+			node['y'] -= 1
+		elif direction == Move.LEFT:
+			node['x'] += 1
+		elif direction == Move.RIGHT:
+			node['x'] -= 1
+		return node
+
 
 	@classmethod
 	def get_ordered(cls, array):
