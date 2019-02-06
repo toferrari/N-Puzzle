@@ -28,6 +28,15 @@ class Board():
 		return self.array[index]
 
 
+	def __eq__(self, other):
+		if (isinstance(other, Board) == False):
+			raise ValueError("Argument should be of type <object Board>.")
+		if self.size != other.size:
+			return False
+		else:
+			return (self.array == other.array).all()
+
+
 	def find(self, value = 0):
 		for y, row in enumerate(self.array):
 			for x, cell in enumerate(row):
