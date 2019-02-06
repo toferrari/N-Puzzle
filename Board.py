@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import numpy as np
+
 from EnumMove import Move
 
 class Board():
@@ -87,5 +89,6 @@ class Board():
 		size = len(array)
 		flat_list = [value for row in array for value in row]
 		flat_list.sort()
+		flat_list = np.roll(flat_list, -1)
 		ordered = [flat_list[size * i : size * (i + 1)] for i in range(size)]
 		return cls(ordered)
