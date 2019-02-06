@@ -1,13 +1,7 @@
 import re
 import sys
-import argparse
 import numpy as np
 
-def helper():
-	print ("Wrong enter.\n")
-	print ("python3 N-Puzzle [-][option] [puzzle]")
-	print ("\t-m : manhattan heuristic")
-	print ("\t-v : graphic vision")
 
 def lamdba_remove_list_empty(line):
 	return(list(filter(lambda word: word != "", line)))
@@ -51,6 +45,7 @@ def error(message):
 	print(message)
 	exit()
 
+
 def get_puzzle(lines):
 	lines = list(map(lambda line : re.sub("\n", "", line), lines))
 	lines = list(map(lambda line : line.split(' '), lines))
@@ -75,6 +70,7 @@ def get_puzzle(lines):
 	if (size != line_puzzle):
 		error ("Size is different than numbers of rows")
 	check_duplicate(puzzle, lines)
+	return puzzle
 
 
 def parse(arg_file):
@@ -83,18 +79,5 @@ def parse(arg_file):
 			lines = file.readlines()
 	except FileNotFoundError:
 		exit()
-	file.close()
 	puzzle = get_puzzle(lines)
-
-if __name__ == "__main__" :
-	if (len(sys.argv) == 1 or len(sys.argv) > 3):
-		helper()
-
-	parser = argparse.ArgumentParser()
-
-	parser.add_argument("-m", "--manhattan", action="store_true", default=False, help="Use manhattan heuristic.")
-	parser.add_argument('file', type=argparse.FileType('r'))
-
-	args = parser.parse_args()
-
-	parse(args.file)
+	return puzzle
