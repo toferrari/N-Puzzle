@@ -30,7 +30,7 @@ def solve(board):
 	#List of nodes
 	success = False
 	closed_list = []
-	open_list = [blank.board]
+	open_list = [board.blank]
 	while success == False and (len(open_list) > 0):
 		min_node = get_min_eval_node(open_list)
 		if board == solved_board:
