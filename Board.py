@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import numpy as np
+
 from EnumMove import Move
 
 class Board():
@@ -24,6 +26,15 @@ class Board():
 
 	def __getitem__(self, index):
 		return self.array[index]
+
+
+	def __eq__(self, other):
+		if (isinstance(other, Board) == False):
+			raise ValueError("Argument should be of type <object Board>.")
+		if self.size != other.size:
+			return False
+		else:
+			return (self.array == other.array).all()
 
 
 	def find(self, value = 0):
@@ -87,5 +98,6 @@ class Board():
 		size = len(array)
 		flat_list = [value for row in array for value in row]
 		flat_list.sort()
+		flat_list = np.roll(flat_list, -1)
 		ordered = [flat_list[size * i : size * (i + 1)] for i in range(size)]
 		return cls(ordered)
