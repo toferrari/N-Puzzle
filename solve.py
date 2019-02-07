@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import numpy as np
+
 from Board import Board
 from EnumMove import Move
+from State import State
 from node import Node
 import heuristics
 
@@ -23,91 +26,92 @@ def init_node(direction, g_x, board, solved_board):
 		return (node)
 
 
-def update_direction(board, target):
-	cell = board.find(target.number)
-	if cell['y'] - 1 == board.blank['y'] and cell['x'] == board.blank['x']:
-		target.direction = Move.DOWN
-	elif cell['y'] + 1 == board.blank['y'] and cell['x'] == board.blank['x']:
-		target.direction = Move.UP
-	elif cell['x'] - 1 == board.blank['x'] and cell['y'] == board.blank['y']:
-		target.direction = Move.RIGHT
-	elif cell['x'] + 1 == board.blank['x'] and cell['y'] == board.blank['y']:
-		target.direction = Move.LEFT
-	else:
-		target.direction = None
+def is_neighbour(current, target):
+	if (target.blank['x'] - 1 == current.blank['x'] and\
+		target.blank['y'] == current.blank['y']) or\
+		(target.blank['x'] + 1 == current.blank['x'] and\
+		target.blank['y'] == current.blank['y']) or\
+		(target.blank['y'] - 1 == current.blank['y'] and\
+		target.blank['x'] == current.blank['x']) or\
+		(target.blank['y'] + 1 == current.blank['y'] and\
+		target.blank['x'] == current.blank['x']):
+		return True
+	return False
 
 
-def get_min_eval_node(board, open_list):
-	if (len(open_list) == 1):
-		return open_list[0]
-	else:
-		l = [item for item in open_list if item.direction]
-		return min(l, key=lambda node: node.f_x)
+def get_min_eval_node(l, current):
+	tmp = l
+	ret = min(tmp, key=lambda node: node.f_x)
+	if current != None and not is_neighbour(current, ret):
+		tmp = [item for item in tmp if is_neighbour(current, item)]
+		if len(tmp) > 0:
+			ret = min(tmp, key=lambda node: node.f_x)
+	return ret
 
 
-def node_in_list(closed_list, target):
-	for node in closed_list:
-		if  node.number == target.number:
-			return node
-	return None
+def in_list(l, other):
+	ret = [state for state in l if state == other]
+	return len(ret) > 0
 
-
-def expand(board, solved_board, g_x):
-	nodes = list(map(lambda direction: init_node(direction, g_x, board, solved_board), Move))
-	nodes = [node for node in nodes if node]
-	return nodes
-
-
-def remove_in_list(list, target):
-	return [item for item in list if target.number != item.number]
-
-
-def add_in_list(l, target):
+def get_index(l, other):
 	for index, item in enumerate(l):
-		if item.number == target.number:
-			l[index] = target
-			break
-	l.append(target)
+		if item == other:
+			return index
+	return -1
+
+def expand(current, final_state):
+	# nodes = list(map(lambda direction: init_node(direction, g_x, board, solved_board), Move))
+	# nodes = [node for node in nodes if node]
+	# return nodes
+	neighbours = [
+	State(current.array.copy(),
+		  g_x=current.g_x + 1,
+		  final_state=final_state,
+		  parent=current
+		).shift(direction)
+		for direction in Move
+	]
+	neighbours = [neighbour for neighbour in neighbours if (neighbour.array != current.array).any()]
+	return neighbours
 
 
-def solve(board):
-	solved_board = Board.get_ordered(board.array)
-	print(solved_board)
-	print("--------------------")
-	print(board)
-	print("--------------------")
+def output_result(closed_list):
+	print("Resolved !")
 
-	success = False
+
+def solve(initial_state, final_state):
+	print("Goal :\n", final_state.array)
+	print("N-puzzle :\n", initial_state.array)
+	print()
+
+	open_list = [initial_state]
 	closed_list = []
-	open_list = [Node(0, board.blank['x'], board.blank['y'], h_x=heuristics.manhattan_distance(board, solved_board))]
+	u = None
 	i = 0
-	while len(open_list) != 0:
-		u = get_min_eval_node(board,open_list)
-		print("Min =\n", u)
-		open_list = remove_in_list(open_list, u)
-		if u.direction:
-			board.shift(u.direction)
-		if board == solved_board:
-			print(board)
-			print("fini")
-			break
-		nodes = expand(board, solved_board, u.g_x + 1)
-		for node in nodes:
-			print(node)
-			node.parent = u
-			k1 = node_in_list(open_list, node)
-			k2 = node_in_list(closed_list, node)
-			if k1 == None and k2 == None:
-				node.f_x = node.g_x + node.h_x
-				add_in_list(open_list, node)
-			if k1 != None and k1.f_x > node.f_x:
-				add_in_list(open_list, node)
-				open_list = remove_in_list(open_list, k1)
-			if k2 != None and k2.f_x > node.f_x:
-				add_in_list(open_list, node)
-				closed_list = remove_in_list(closed_list, k2)
-		for open in open_list:
-			update_direction(board, open)
-		add_in_list(closed_list, u)
-		print(board, "\n")
+	while len(open_list) > 0:
 		i += 1
+		u = get_min_eval_node(open_list, u)
+		closed_list.append(u)
+		open_list.remove(u)
+		print("\nDEPTH ------------------------: {}\n".format(u.g_x), u.array, "\n----------------------")
+		if u == final_state:
+			output_result(closed_list)
+			break
+		neighbours = expand(u, final_state)
+		for neighbour in neighbours:
+			if neighbour in closed_list:
+			# if in_list(closed_list, neighbour):
+				continue
+			neighbour.h_x = neighbour.calculate_heuristics(heuristics.manhattan)
+			neighbour.f_x = neighbour.g_x + neighbour.h_x
+			if neighbour not in open_list:
+			# if not in_list(open_list, neighbour):
+				open_list.append(neighbour)
+			else:
+				index = get_index(open_list, neighbour)
+				if neighbour.g_x < open_list[index].g_x:
+					open_list[index] = neighbour
+					# open_list[index].g_x = neighbour.g_x
+					# open_list[index].h_x = neighbour.h_x
+					# open_list[index].f_x = neighbour.f_x
+					# open_list[index].parent = neighbour.parent

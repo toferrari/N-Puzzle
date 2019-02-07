@@ -4,8 +4,10 @@
 import sys
 import argparse
 
+import heuristics
 from Board import Board
 from EnumMove import Move
+from State import State
 from solve import solve
 from parse import parse
 
@@ -28,5 +30,9 @@ if __name__ == "__main__" :
 
 	args = parser.parse_args()
 	puzzle = parse(args.file)
-	board = Board(puzzle)
-	solve(board)
+	# board = Board(puzzle)
+	# solve(board)
+	initial_state = State(puzzle)
+	initial_state.final_state = State.to_final_puzzle(puzzle)
+	initial_state.calculate_heuristics(heuristics.manhattan)
+	solve(initial_state, initial_state.final_state)
