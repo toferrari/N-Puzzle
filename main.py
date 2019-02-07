@@ -8,6 +8,8 @@ from Board import Board
 from EnumMove import Move
 from solve import solve
 from parse import parse
+from error import error
+from check_soluble import check_soluble
 
 
 def helper():
@@ -29,4 +31,5 @@ if __name__ == "__main__" :
 	args = parser.parse_args()
 	puzzle = parse(args.file)
 	board = Board(puzzle)
-	solve(board)
+	check_soluble(board)
+	# solve(board)
