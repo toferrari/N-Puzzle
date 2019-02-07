@@ -10,6 +10,8 @@ from EnumMove import Move
 from State import State
 from solve import solve
 from parse import parse
+from error import error
+from check_soluble import check_soluble
 
 
 def helper():
@@ -30,9 +32,8 @@ if __name__ == "__main__" :
 
 	args = parser.parse_args()
 	puzzle = parse(args.file)
-	# board = Board(puzzle)
-	# solve(board)
 	initial_state = State(puzzle)
+	check_soluble(initial_state)
 	initial_state.final_state = State.to_final_puzzle(puzzle)
 	initial_state.calculate_heuristics(heuristics.manhattan)
 	solve(initial_state, initial_state.final_state)
