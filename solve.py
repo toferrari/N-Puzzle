@@ -22,13 +22,12 @@ def get_index(l, other):
 	return -1
 
 
-def expand(current, final_state):
+def expand(current):
 	neighbours = [
 		State(current.state.copy(),
 		  size=current.size,
 		  g_x=current.g_x + 1,
 		  direction=direction,
-		  final_state=final_state,
 		  parent=current
 		).shift(direction)
 		for direction in Move
@@ -39,7 +38,6 @@ def expand(current, final_state):
 def output_result(closed_list, start_time, i):
 	end_time = time()
 	print("Resolved !")
-	closed_list.sort(key=lambda node: node.g_x)
 	moves = 0
 	item = closed_list[-1]
 	while item != None:
@@ -51,12 +49,12 @@ def output_result(closed_list, start_time, i):
 	print("time n-puzzle {:.2f}s".format(float(end_time - start_time)))
 
 
-def solve(initial_state, final_state):
-	print("Goal :\n", final_state.state)
-	print("N-puzzle :\n", initial_state.state)
+def solve(start, goal):
+	print("Goal :\n", goal.state)
+	print("N-puzzle :\n", start.state)
 	print()
 	start_time = time()
-	open_list = [initial_state]
+	open_list = [start]
 	closed_list = []
 	current = None
 	i = 0
@@ -65,14 +63,14 @@ def solve(initial_state, final_state):
 		current = get_min_eval_node(open_list)
 		closed_list.append(current)
 		open_list.remove(current)
-		if current == final_state:
+		if current == goal:
 			output_result(closed_list, start_time, i)
 			break
-		neighbours = expand(current, final_state)
+		neighbours = expand(current)
 		for neighbour in neighbours:
 			if neighbour in closed_list:
 				continue
-			neighbour.calculate_heuristics(heuristics.manhattan)
+			neighbour.calculate_heuristics(goal, heuristics.manhattan)
 			if neighbour not in open_list:
 				open_list.append(neighbour)
 			elif current.g_x + 1 <= neighbour.g_x:

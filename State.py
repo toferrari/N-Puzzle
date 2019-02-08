@@ -30,7 +30,7 @@ directions = {
 class State():
 
 
-	def __init__(self, state, size, g_x=0, h_x=0, direction=None, final_state=None, parent=None):
+	def __init__(self, state, size, g_x=0, h_x=0, direction=None, parent=None):
 		self.size = size
 		self.state = state
 		self.g_x = g_x
@@ -38,7 +38,6 @@ class State():
 		self.f_x = self.g_x + self.h_x
 		self.direction = direction
 		self.parent = parent
-		self.final_state = final_state
 		self.blank = self.find()
 
 
@@ -46,10 +45,6 @@ class State():
 		if other == None:
 			return False
 		return self.state == other.state
-
-
-	# def __getitem__(self, index):
-	# 	return self.array[index]
 
 
 	def find(self, value = 0):
@@ -82,8 +77,8 @@ class State():
 		return self
 
 
-	def calculate_heuristics(self, heuristic):
-		self.h_x = heuristic(self.state, self.final_state.state)
+	def calculate_heuristics(self, goal, heuristic):
+		self.h_x = heuristic(self.state, goal.state)
 		self.f_x = self.g_x + self.h_x
 
 
