@@ -1,7 +1,7 @@
 # coding: utf-8
-#
-# def manhattan_distance(A, B):
-# 	return abs(B['x'] - A['x']) + abs(B['y'] - A['y'])
+
+from math import sqrt
+
 
 def manhattan(state, final_state):
 	def man(Ax, Bx, Ay, By):
@@ -10,25 +10,26 @@ def manhattan(state, final_state):
 	ret = 0
 	for (Ax, Ay), Acell in state.items():
 		for (Bx, By), Bcell in final_state.items():
-			if Acell == Bcell:
+			if Acell != 0 and Acell == Bcell:
 				ret += man(Ax, Bx, Ay, By)
-	# for y, row in enumerate(state):
-	# 	for x, cell in enumerate(row):
-	# 		if cell != 0:
-	# 			other_cell = final_state.find(cell)
-	# 			ret += man(other_cell['x'], x, other_cell['y'], y)
 	return ret
 
 
 def hamming(state, final_state):
-	n = 0
-	for y, row in enumerate(state):
-		for x, cell in enumerate(row):
-			if cell != 0 and state[y][x] != final_state[y][x]:
-				n += 1
-	return n
+	ret = 0
+	for coord, Acell in state.items():
+		if Acell != 0 and final_state[coord] != Acell:
+			ret += 1
+	return ret
 
 
+def euclid(state, final_state):
+	def euc(Ax, Bx, Ay, By):
+		return sqrt((Bx - Ax)**2 + (By - Ay)**2)
 
-def euclid_distance(A, B):
-	return ((B['x'] - A['x'])**2 + (B['y'] - A['y'])**2)**1/2
+	ret = 0
+	for (Ax, Ay), Acell in state.items():
+		for (Bx, By), Bcell in final_state.items():
+			if Acell != 0 and Acell == Bcell:
+				ret += euc(Ax, Bx, Ay, By)
+	return ret
