@@ -8,9 +8,10 @@ from EnumMove import Move
 from State import State
 from node import Node
 import heuristics
+from utils import _convert_to_array
 
 
-def get_min_eval_node(l, current):
+def get_min_eval_node(l):
 	return min(l, key=lambda node: node.f_x)
 
 
@@ -23,15 +24,16 @@ def get_index(l, other):
 
 def expand(current, final_state):
 	neighbours = [
-	State(current.array.copy(),
+		State(current.state.copy(),
+		  size=current.size,
 		  g_x=current.g_x + 1,
+		  direction=direction,
 		  final_state=final_state,
 		  parent=current
 		).shift(direction)
 		for direction in Move
 	]
-	neighbours = [neighbour for neighbour in neighbours if (neighbour.array != current.array).any()]
-	return neighbours
+	return [neighbour for neighbour in neighbours if neighbour != current]
 
 
 def output_result(closed_list, start_time, i):
@@ -42,7 +44,7 @@ def output_result(closed_list, start_time, i):
 	item = closed_list[-1]
 	while item != None:
 		moves += 1
-		print(item.array, "---> ", item.g_x)
+		print(_convert_to_array(item.state, item.size), "---> ", item.g_x)
 		item = item.parent
 	print("Number of moves: ", moves)
 	print("Number of loops: ", i)
@@ -50,8 +52,8 @@ def output_result(closed_list, start_time, i):
 
 
 def solve(initial_state, final_state):
-	print("Goal :\n", final_state.array)
-	print("N-puzzle :\n", initial_state.array)
+	print("Goal :\n", final_state.state)
+	print("N-puzzle :\n", initial_state.state)
 	print()
 	start_time = time()
 	open_list = [initial_state]
@@ -60,7 +62,7 @@ def solve(initial_state, final_state):
 	i = 0
 	while len(open_list) > 0:
 		i += 1
-		current = get_min_eval_node(open_list, current)
+		current = get_min_eval_node(open_list)
 		closed_list.append(current)
 		open_list.remove(current)
 		if current == final_state:
@@ -70,22 +72,9 @@ def solve(initial_state, final_state):
 		for neighbour in neighbours:
 			if neighbour in closed_list:
 				continue
-			neighbour.h_x = neighbour.calculate_heuristics(heuristics.manhattan)
-			neighbour.f_x = neighbour.g_x + neighbour.h_x
+			neighbour.calculate_heuristics(heuristics.manhattan)
 			if neighbour not in open_list:
 				open_list.append(neighbour)
 			elif current.g_x + 1 <= neighbour.g_x:
 				index = get_index(open_list, neighbour)
 				open_list[index] = neighbour
-			# neighbour.h_x = neighbour.calculate_heuristics(heuristics.manhattan)
-			# neighbour.f_x = neighbour.g_x + neighbour.h_x
-			# if neighbour not in closed_list and neighbour not in open_list:
-			# 	open_list.append(neighbour)
-			# elif current.g_x + 1 <= neighbour.g_x:
-			# 	index = get_index(open_list, neighbour)
-			# 	if index != -1:
-			# 		open_list[index] = neighbour
-			# 	else:
-			# 		open_list.append(neighbour)
-			# 	if neighbour in closed_list:
-			# 		closed_list.remove(neighbour)

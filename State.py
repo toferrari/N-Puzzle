@@ -3,6 +3,7 @@
 
 import numpy as np
 from EnumMove import Move
+from utils import _convert_to_dict
 
 SNAIL_STATES = {
 	3: [[1, 2, 3], [8, 0, 4], [7, 6, 5]],
@@ -18,81 +19,80 @@ NORMAL_STATES = {
 	4: [[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]]
 }
 
+directions = {
+	Move.UP: (-1, 0),
+	Move.DOWN: (1, 0),
+	Move.LEFT: (0, -1),
+	Move.RIGHT: (0, 1)
+}
+
 
 class State():
 
-	def __init__(self, array, g_x=0, h_x=0, final_state=None, parent=None):
-		self.size = len(array)
-		self.array = array
+
+	def __init__(self, state, size, g_x=0, h_x=0, direction=None, final_state=None, parent=None):
+		self.size = size
+		self.state = state
 		self.g_x = g_x
 		self.h_x = h_x
-		self.f_x = 0
+		self.f_x = self.g_x + self.h_x
+		self.direction = direction
 		self.parent = parent
 		self.final_state = final_state
 		self.blank = self.find()
 
 
 	def __eq__(self, other):
-		if (other == None) or (self.size != other.size):
+		if other == None:
 			return False
-		return (self.array == other.array).all()
+		return self.state == other.state
 
 
-	def __getitem__(self, index):
-		return self.array[index]
+	# def __getitem__(self, index):
+	# 	return self.array[index]
+
 
 	def find(self, value = 0):
-		for y, row in enumerate(self.array):
-			for x, cell in enumerate(row):
-				if cell == value:
-					return {"x": x, "y": y}
+		for (x, y), cell in self.state.items():
+			if value == cell:
+				return {"x": x, "y": y}
 
 
-	def can_shift(self, direction):
-		if (isinstance(direction, Move) == False):
-			raise ValueError("Argument should be of type <enum Move>.")
-		return not ((direction == Move.UP and self.blank['y'] == 0)\
-			or (direction == Move.DOWN and self.blank['y'] == self.size - 1) \
-			or (direction == Move.LEFT and self.blank['x'] == 0)\
-			or (direction == Move.RIGHT and self.blank['x'] == self.size - 1))
+	def can_shift(self, direction=None):
+		if self.direction != None:
+			self.direction = direction
+		return not ((self.direction == Move.UP and self.blank['y'] == 0)\
+			or (self.direction == Move.DOWN and self.blank['y'] == self.size - 1) \
+			or (self.direction == Move.LEFT and self.blank['x'] == 0)\
+			or (self.direction == Move.RIGHT and self.blank['x'] == self.size - 1))
 
 
 	def shift(self, direction):
 		if (isinstance(direction, Move) == False):
 			raise ValueError("Argument should be of type <enum Move>.")
 		if self.can_shift(direction):
-			x, y = self.blank['x'], self.blank['y']
-			tmp = self.array[y][x]
-			if direction == Move.UP:
-				self.array[y][x] = self.array[y - 1][x]
-				self.array[y - 1][x] = tmp
-				self.blank['y'] -= 1
-			elif direction == Move.DOWN:
-				self.array[y][x] = self.array[y + 1][x]
-				self.array[y + 1][x] = tmp
-				self.blank['y'] += 1
-			elif direction == Move.LEFT:
-				self.array[y][x] = self.array[y][x - 1]
-				self.array[y][x - 1] = tmp
-				self.blank['x'] -= 1
-			elif direction == Move.RIGHT:
-				self.array[y][x] = self.array[y][x + 1]
-				self.array[y][x + 1] = tmp
-				self.blank['x'] += 1
+			x1, y1 = self.blank['x'], self.blank['y']
+			for key, (y2, x2) in directions.items():
+				if key == direction:
+					y, x = y1 + y2, x1 + x2
+					tmp_cell = self.state[(x1, y1)]
+					self.state[(x1, y1)] = self.state[(x, y)]
+					self.state[(x, y)] = tmp_cell
+					break
 		return self
 
 
 	def calculate_heuristics(self, heuristic):
-		return heuristic(self, self.final_state)
+		self.h_x = heuristic(self.state, self.final_state.state)
+		self.f_x = self.g_x + self.h_x
 
 
 	@classmethod
-	def to_final_puzzle(cls, array, how='snail'):
-		size = len(array)
+	def to_final_puzzle(cls, array, size, how='snail'):
 		if how == 'snail':
-			return cls(np.array(SNAIL_STATES[size]).reshape(size, size))
+			return cls(_convert_to_dict(np.array(SNAIL_STATES[size]).reshape(size, size)), size)
 		elif how == 'ordinary':
-			return cls(np.array(NORMAL_STATES[size]).reshape(size, size))
+			return cls(_convert_to_dict(np.array(NORMAL_STATES[size]).reshape(size, size)), size)
 		else:
 			print("Give a right <how> state")
 			exit()

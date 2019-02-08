@@ -12,6 +12,7 @@ from solve import solve
 from parse import parse
 from error import error
 from check_soluble import check_soluble
+from utils import _convert_to_dict
 
 
 def helper():
@@ -32,8 +33,10 @@ if __name__ == "__main__" :
 
 	args = parser.parse_args()
 	puzzle = parse(args.file)
-	initial_state = State(puzzle)
-	check_soluble(initial_state)
-	initial_state.final_state = State.to_final_puzzle(puzzle)
+	size = len(puzzle)
+	dict_puzzle = _convert_to_dict(puzzle)
+	initial_state = State(dict_puzzle, size)
+	# check_soluble(initial_state)
+	initial_state.final_state = State.to_final_puzzle(dict_puzzle, size)
 	initial_state.calculate_heuristics(heuristics.manhattan)
 	solve(initial_state, initial_state.final_state)

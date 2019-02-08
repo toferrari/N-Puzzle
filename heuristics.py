@@ -8,11 +8,15 @@ def manhattan(state, final_state):
 		return abs(Bx - Ax) + abs(By - Ay)
 
 	ret = 0
-	for y, row in enumerate(state):
-		for x, cell in enumerate(row):
-			if cell != 0:
-				other_cell = final_state.find(cell)
-				ret += man(other_cell['x'], x, other_cell['y'], y)
+	for (Ax, Ay), Acell in state.items():
+		for (Bx, By), Bcell in final_state.items():
+			if Acell == Bcell:
+				ret += man(Ax, Bx, Ay, By)
+	# for y, row in enumerate(state):
+	# 	for x, cell in enumerate(row):
+	# 		if cell != 0:
+	# 			other_cell = final_state.find(cell)
+	# 			ret += man(other_cell['x'], x, other_cell['y'], y)
 	return ret
 
 
