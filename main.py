@@ -5,14 +5,12 @@ import sys
 import argparse
 
 import heuristics
-from Board import Board
-from EnumMove import Move
+import utils
 from State import State
-from solve import solve
 from parse import parse
 from error import error
 from check_soluble import check_soluble
-from utils import _convert_to_dict
+from Game import Game
 
 
 def helper():
@@ -33,10 +31,6 @@ if __name__ == "__main__" :
 
 	args = parser.parse_args()
 	puzzle = parse(args.file)
-	size = len(puzzle)
-	dict_puzzle = _convert_to_dict(puzzle)
-	start = State(dict_puzzle, size)
-	# check_soluble(start)
-	goal = State.to_final_puzzle(dict_puzzle, size)
-	start.calculate_heuristics(goal, heuristics.manhattan)
-	solve(start, goal)
+	game = Game(utils._convert_to_dict(puzzle), len(puzzle))
+	if game.is_solvable():
+		game.solve()
