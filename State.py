@@ -47,6 +47,10 @@ class State():
 		return self.state == other.state
 
 
+	def __hash__(self):
+		return hash(frozenset(self.state.items()))
+
+
 	def find(self, value = 0):
 		for (x, y), cell in self.state.items():
 			if value == cell:
