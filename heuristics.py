@@ -7,15 +7,13 @@ def manhattan(state, final_state):
 	def man(Ax, Bx, Ay, By):
 		return abs(Bx - Ax) + abs(By - Ay)
 
-	distances = []
+	ret = 0
 	for y, row in enumerate(state):
 		for x, cell in enumerate(row):
-			if cell == 0:
-				continue
-			other_cell = final_state.find(cell)
-			if cell != other_cell:
-				distances.append(man(other_cell['x'], x, other_cell['y'], y))
-	return sum(distances)
+			if cell != 0:
+				other_cell = final_state.find(cell)
+				ret += man(other_cell['x'], x, other_cell['y'], y)
+	return ret
 
 
 def hamming(state, final_state):
