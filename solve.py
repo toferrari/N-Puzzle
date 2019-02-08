@@ -34,7 +34,7 @@ def expand(current, final_state):
 	return neighbours
 
 
-def output_result(closed_list, start_time):
+def output_result(closed_list, start_time, i):
 	end_time = time()
 	print("Resolved !")
 	closed_list.sort(key=lambda node: node.g_x)
@@ -45,6 +45,7 @@ def output_result(closed_list, start_time):
 		print(item.array, "---> ", item.g_x)
 		item = item.parent
 	print("Number of moves: ", moves)
+	print("Number of loops: ", i)
 	print("time n-puzzle {:.2f}s".format(float(end_time - start_time)))
 
 
@@ -63,21 +64,28 @@ def solve(initial_state, final_state):
 		closed_list.append(current)
 		open_list.remove(current)
 		if current == final_state:
-			output_result(closed_list, start_time)
+			output_result(closed_list, start_time, i)
 			break
 		neighbours = expand(current, final_state)
 		for neighbour in neighbours:
+			if neighbour in closed_list:
+				continue
 			neighbour.h_x = neighbour.calculate_heuristics(heuristics.manhattan)
 			neighbour.f_x = neighbour.g_x + neighbour.h_x
-			if neighbour not in closed_list and neighbour not in open_list:
+			if neighbour not in open_list:
 				open_list.append(neighbour)
-				# continue
-			# if neighbour not in open_list:
 			elif current.g_x + 1 <= neighbour.g_x:
 				index = get_index(open_list, neighbour)
-				if index != -1:
-					open_list[index] = neighbour
-				else:
-					open_list.append(neighbour)
-				if neighbour in closed_list:
-					closed_list.remove(neighbour)
+				open_list[index] = neighbour
+			# neighbour.h_x = neighbour.calculate_heuristics(heuristics.manhattan)
+			# neighbour.f_x = neighbour.g_x + neighbour.h_x
+			# if neighbour not in closed_list and neighbour not in open_list:
+			# 	open_list.append(neighbour)
+			# elif current.g_x + 1 <= neighbour.g_x:
+			# 	index = get_index(open_list, neighbour)
+			# 	if index != -1:
+			# 		open_list[index] = neighbour
+			# 	else:
+			# 		open_list.append(neighbour)
+			# 	if neighbour in closed_list:
+			# 		closed_list.remove(neighbour)
