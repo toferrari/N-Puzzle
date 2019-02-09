@@ -51,13 +51,7 @@ class State():
 		return hash(frozenset(self.state.items()))
 
 
-	def find(self, value = 0):
-		for (x, y), cell in self.state.items():
-			if value == cell:
-				return {"x": x, "y": y}
-
-
-	def can_shift(self, direction=None):
+	def _can_shift(self, direction=None):
 		if self.direction != None:
 			self.direction = direction
 		return not ((self.direction == Move.UP and self.blank['y'] == 0)\
@@ -66,10 +60,29 @@ class State():
 			or (self.direction == Move.RIGHT and self.blank['x'] == self.size - 1))
 
 
+	def find(self, value = 0):
+		for (x, y), cell in self.state.items():
+			if value == cell:
+				return {"x": x, "y": y}
+
+
+	def expand(self):
+		neighbours = [
+			State(self.state.copy(),
+			  size=self.size,
+			  g_x=self.g_x + 1,
+			  direction=direction,
+			  parent=self
+			).shift(direction)
+			for direction in Move
+		]
+		return [neighbour for neighbour in neighbours if neighbour != self]
+
+
 	def shift(self, direction):
 		if (isinstance(direction, Move) == False):
 			raise ValueError("Argument should be of type <enum Move>.")
-		if self.can_shift(direction):
+		if self._can_shift(direction):
 			x1, y1 = self.blank['x'], self.blank['y']
 			for key, (y2, x2) in directions.items():
 				if key == direction:

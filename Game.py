@@ -68,19 +68,6 @@ class Game():
 		print("Space complexity: ", self._max_states)
 
 
-	def _expand(self, current):
-		neighbours = [
-			State(current.state.copy(),
-			  size=current.size,
-			  g_x=current.g_x + 1,
-			  direction=direction,
-			  parent=current
-			).shift(direction)
-			for direction in Move
-		]
-		return [neighbour for neighbour in neighbours if neighbour != current]
-
-
 	def solve(self):
 		current = None
 		self._open_list = set([self._start])
@@ -93,7 +80,7 @@ class Game():
 			self._closed_list.add(current)
 			if current == self._goal:
 				break
-			neighbours = self._expand(current)
+			neighbours = current.expand()
 			self._total_states += len(neighbours)
 			for neighbour in neighbours:
 				if neighbour in self._closed_list:
