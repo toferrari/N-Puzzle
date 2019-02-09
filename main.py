@@ -8,8 +8,6 @@ import heuristics
 import utils
 from State import State
 from parse import parse
-from error import error
-from check_soluble import check_soluble
 from Game import Game
 
 

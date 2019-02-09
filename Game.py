@@ -1,8 +1,6 @@
 # coding: utf-8
 
-import math
 from time import time
-import numpy as np
 
 import heuristics
 import utils
@@ -10,6 +8,7 @@ from EnumMove import Move
 from State import State
 
 class Game():
+
 
 	def __init__(self, puzzle, size, h=heuristics.manhattan):
 		self._size = size
@@ -27,9 +26,9 @@ class Game():
 		self.is_solvable = self._is_solvable()
 
 
-
 	def __del__(self):
-		print("time n-puzzle {:.2f}s".format(time() - self._start_time))
+		if self.is_solvable:
+			print("time n-puzzle {:.2f}s".format(time() - self._start_time))
 
 
 	def _output_result(self):
@@ -37,12 +36,13 @@ class Game():
 		moves = -1
 		while elem != None:
 			moves += 1
-			# print(utils._convert_to_array(elem.state, elem.size), "---> ", elem.g_x)
+			print(utils._convert_to_array(elem.state, elem.size), "---> ", elem.g_x)
 			elem = elem.parent
 		print("Resolved !")
 		print("Number of moves: ", moves)
 		print("Number of loops: ", self._n_loop)
-		print("Complexity in space: ", self._max_states)
+		print("Time complexity: ", self._total_states)
+		print("Space complexity: ", self._max_states)
 
 
 	def _expand(self, current):
@@ -69,17 +69,18 @@ class Game():
 			self._open_list.remove(current)
 			self._closed_list.add(current)
 			if current == self._goal:
-				self._output_result()
 				break
 			neighbours = self._expand(current)
+			self._total_states += len(neighbours)
 			for neighbour in neighbours:
 				if neighbour in self._closed_list:
 					continue
 				neighbour.calculate_heuristics(self._goal, self._heuristic)
 				self._open_list.add(neighbour)
-			self._max_states = n_states if self._max_states < n_states else self._max_states
 			self._n_loop += 1
 			n_states = len(self._open_list)
+			self._max_states = max(n_states, self._max_states)
+		self._output_result()
 
 
 	def _is_solvable(self):
@@ -97,6 +98,8 @@ class Game():
 					if puzzle[j] != 0 and puzzle[j] < puzzle[i]:
 						ret += 1
 			return ret
+
+
 		puzzle = utils._convert_to_array(self._start.state, self._size).flatten()
 		sorted_puzzle = utils._convert_to_array(self._goal.state, self._size).flatten()
 		size = len(puzzle)
