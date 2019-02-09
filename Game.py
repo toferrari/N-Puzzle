@@ -10,25 +10,48 @@ from State import State
 class Game():
 
 
-	def __init__(self, puzzle, size, h=heuristics.manhattan):
+	def __init__(self, puzzle, size, heuristic=heuristics.manhattan):
 		self._size = size
 		self._start = State(puzzle, size)
 		self._goal = State.to_final_puzzle(puzzle, size)
-		self._heuristic = h
+		self._heuristic = heuristic
 
 		self._start.calculate_heuristics(self._goal, self._heuristic)
+		self.is_solvable = self._is_solvable()
 
 		self._start_time = time()
 		self._max_states = 0
 		self._total_states = 0
 		self._n_loop = 0
 
-		self.is_solvable = self._is_solvable()
-
 
 	def __del__(self):
 		if self.is_solvable:
 			print("time n-puzzle {:.2f}s".format(time() - self._start_time))
+
+
+	def _is_solvable(self):
+		'''
+			Source:
+				- http://www.cs.bham.ac.uk/~mdr/teaching/modules04/java2/TilesSolvability.html
+				- https://math.stackexchange.com/questions/293527/how-to-check-if-a-8-puzzle-is-solvable
+		'''
+		def get_n_inversions(puzzle, size):
+			ret = 0
+			for i in range(size):
+				if puzzle[i] == 0:
+					continue
+				for j in range(i + 1, size):
+					if puzzle[j] != 0 and puzzle[j] < puzzle[i]:
+						ret += 1
+			return ret
+
+
+		puzzle = utils._convert_to_array(self._start.state, self._size).flatten()
+		sorted_puzzle = utils._convert_to_array(self._goal.state, self._size).flatten()
+		size = len(puzzle)
+		i1, i2 = get_n_inversions(puzzle, size), get_n_inversions(sorted_puzzle, size)
+		return i1 % 2 == i2 % 2
 
 
 	def _output_result(self):
@@ -81,27 +104,3 @@ class Game():
 			n_states = len(self._open_list)
 			self._max_states = max(n_states, self._max_states)
 		self._output_result()
-
-
-	def _is_solvable(self):
-		'''
-			Source:
-				- http://www.cs.bham.ac.uk/~mdr/teaching/modules04/java2/TilesSolvability.html
-				- https://math.stackexchange.com/questions/293527/how-to-check-if-a-8-puzzle-is-solvable
-		'''
-		def get_n_inversions(puzzle, size):
-			ret = 0
-			for i in range(size):
-				if puzzle[i] == 0:
-					continue
-				for j in range(i + 1, size):
-					if puzzle[j] != 0 and puzzle[j] < puzzle[i]:
-						ret += 1
-			return ret
-
-
-		puzzle = utils._convert_to_array(self._start.state, self._size).flatten()
-		sorted_puzzle = utils._convert_to_array(self._goal.state, self._size).flatten()
-		size = len(puzzle)
-		i1, i2 = get_n_inversions(puzzle, size), get_n_inversions(sorted_puzzle, size)
-		return i1 % 2 == i2 % 2

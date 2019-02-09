@@ -33,3 +33,6 @@ def euclid(state, final_state):
 			if Acell != 0 and Acell == Bcell:
 				ret += euc(Ax, Bx, Ay, By)
 	return ret
+
+
+choices = {"manhattan": manhattan, "hamming": hamming, "euclid": euclid}

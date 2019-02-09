@@ -1,4 +1,3 @@
-import re
 import sys
 import numpy as np
 from error import error
@@ -49,7 +48,6 @@ def check_duplicate(puzzle, lines):
 		error("No blank.")
 
 def get_puzzle(lines):
-	lines = list(map(lambda line : re.sub("\n", "", line), lines))
 	lines = list(map(lambda line : line.split(' '), lines))
 	lines = list(map(lambda line : lamdba_remove_list_empty(line), lines))
 	lines = list(map(lambda line : remove_htag(line), lines))
@@ -72,14 +70,4 @@ def get_puzzle(lines):
 	if (size != line_puzzle):
 		error ("Size is different than numbers of rows.")
 	check_duplicate(puzzle, lines)
-	return puzzle
-
-
-def parse(arg_file):
-	try:
-		with arg_file as file:
-			lines = file.readlines()
-	except FileNotFoundError:
-		exit()
-	puzzle = get_puzzle(lines)
 	return puzzle
