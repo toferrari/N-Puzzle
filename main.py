@@ -32,5 +32,7 @@ if __name__ == "__main__" :
 	args = parser.parse_args()
 	puzzle = parse(args.file)
 	game = Game(utils._convert_to_dict(puzzle), len(puzzle))
-	if game.is_solvable():
+	if game.is_solvable:
 		game.solve()
+	else:
+		print("Cannot solve this n-puzzle.")
