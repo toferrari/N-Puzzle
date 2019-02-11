@@ -23,6 +23,7 @@ if __name__ == "__main__" :
 	h_choices = list(heuristics.choices.keys())
 	parser.add_argument("--heuristic", choices=h_choices, default=h_choices[0], help="Set a heuristic function.")
 	parser.add_argument("-s", "--size", type=int, default=3, help="Generate a n-puzzle of size")
+	parser.add_argument("-m", "--max_size", type=int, default=32, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
 	parser.add_argument('file', nargs='?', type=argparse.FileType('r'))
 	args = parser.parse_args()
 
@@ -35,7 +36,7 @@ if __name__ == "__main__" :
 	args.heuristic = heuristics.choices[args.heuristic]
 	puzzle = get_puzzle(lines)
 	print(puzzle)
-	game = Game(utils._convert_puzzle_to_dict(puzzle), len(puzzle), heuristic=args.heuristic)
+	game = Game(utils._convert_puzzle_to_dict(puzzle), len(puzzle), heuristic=args.heuristic, max_size=args.max_size)
 	if game.is_solvable:
 		game.solve()
 	else:

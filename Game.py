@@ -11,8 +11,9 @@ from State import State
 class Game():
 
 
-	def __init__(self, puzzle, size, heuristic=heuristics.manhattan):
+	def __init__(self, puzzle, size, heuristic=heuristics.manhattan, max_size=8):
 		self._size = size
+		self._max_size = max_size
 		self._start = State(puzzle, size)
 		goal = Game.make_goal(size)
 		self._goal = State(utils._convert_list_to_dict(goal, size), size)
@@ -61,13 +62,22 @@ class Game():
 		moves = -1
 		while elem != None:
 			moves += 1
-			print(utils._convert_to_array(elem.state, elem.size), "---> ", elem.g_x)
+			# print(utils._convert_to_array(elem.state, elem.size), "---> ", elem.g_x)
 			elem = elem.parent
 		print("Resolved !")
 		print("Number of moves: ", moves)
 		print("Number of loops: ", self._n_loop)
 		print("Time complexity: ", self._total_states)
 		print("Space complexity: ", self._max_states)
+
+
+	def _pop_max(self, size):
+		if self._max_size < 8:
+			return
+		while size > 0 and size >= self._max_size:
+			to_pop = max(self._open_list, key=lambda node: node.f_x)
+			self._open_list.remove(to_pop)
+			size -= 1
 
 
 	def solve(self):
@@ -91,6 +101,7 @@ class Game():
 				self._open_list.add(neighbour)
 			self._n_loop += 1
 			n_states = len(self._open_list)
+			self._pop_max(n_states)
 			self._max_states = max(n_states, self._max_states)
 		self._output_result()
 
