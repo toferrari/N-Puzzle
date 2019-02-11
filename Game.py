@@ -51,7 +51,8 @@ class Game():
 		puzzle = utils._convert_to_array(self._start.state, self._size).flatten()
 		sorted_puzzle = utils._convert_to_array(self._goal.state, self._size).flatten()
 		size = len(puzzle)
-		i1, i2 = get_n_inversions(puzzle, size), get_n_inversions(sorted_puzzle, size)
+		i1 = get_n_inversions(puzzle, size) + (list(puzzle).index(0) if self._size % 2 == 0 else 0)
+		i2 = get_n_inversions(sorted_puzzle, size) + (list(sorted_puzzle).index(0) if self._size % 2 == 0 else 0)
 		return i1 % 2 == i2 % 2
 
 
