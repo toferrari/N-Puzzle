@@ -35,7 +35,7 @@ if __name__ == "__main__" :
 	args.heuristic = heuristics.choices[args.heuristic]
 	puzzle = get_puzzle(lines)
 	print(puzzle)
-	game = Game(utils._convert_to_dict(puzzle), len(puzzle), heuristic=args.heuristic)
+	game = Game(utils._convert_puzzle_to_dict(puzzle), len(puzzle), heuristic=args.heuristic)
 	if game.is_solvable:
 		game.solve()
 	else:

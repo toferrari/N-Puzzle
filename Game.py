@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from time import time
+import numpy as np
 
 import heuristics
 import utils
@@ -13,7 +14,8 @@ class Game():
 	def __init__(self, puzzle, size, heuristic=heuristics.manhattan):
 		self._size = size
 		self._start = State(puzzle, size)
-		self._goal = State.to_final_puzzle(puzzle, size)
+		goal = Game.make_goal(size)
+		self._goal = State(utils._convert_list_to_dict(goal, size), size)
 		self._heuristic = heuristic
 
 		self._start.calculate_heuristics(self._goal, self._heuristic)
@@ -42,10 +44,9 @@ class Game():
 				if puzzle[i] == 0:
 					continue
 				for j in range(i + 1, size):
-					if puzzle[j] != 0 and puzzle[j] < puzzle[i]:
+					if puzzle[j] != 0 and puzzle[i] > puzzle[j]:
 						ret += 1
 			return ret
-
 
 		puzzle = utils._convert_to_array(self._start.state, self._size).flatten()
 		sorted_puzzle = utils._convert_to_array(self._goal.state, self._size).flatten()
@@ -91,3 +92,31 @@ class Game():
 			n_states = len(self._open_list)
 			self._max_states = max(n_states, self._max_states)
 		self._output_result()
+
+
+	@staticmethod
+	def make_goal(s):
+		ts = s*s
+		puzzle = [-1 for i in range(ts)]
+		cur = 1
+		x = 0
+		ix = 1
+		y = 0
+		iy = 0
+		while True:
+			puzzle[x + y*s] = cur
+			if cur == 0:
+				break
+			cur += 1
+			if x + ix == s or x + ix < 0 or (ix != 0 and puzzle[x + ix + y*s] != -1):
+				iy = ix
+				ix = 0
+			elif y + iy == s or y + iy < 0 or (iy != 0 and puzzle[x + (y+iy)*s] != -1):
+				ix = -iy
+				iy = 0
+			x += ix
+			y += iy
+			if cur == s*s:
+				cur = 0
+
+		return puzzle

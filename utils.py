@@ -3,11 +3,19 @@
 import numpy as np
 
 
-def _convert_to_dict(array):
+def _convert_puzzle_to_dict(puzzle):
 	map = {}
-	for y, row in enumerate(array):
-		for x, cell in enumerate(row):
-			map[(x, y)] = cell
+	for x, row in enumerate(puzzle):
+		for y, cell in enumerate(row):
+			map[(y, x)] = cell
+	return map
+
+
+def _convert_list_to_dict(list, size):
+	map = {}
+	for y in range(size):
+		for x in range(size):
+			map[(y, x)] = list[x * size + y]
 	return map
 
 
