@@ -24,3 +24,10 @@ def _convert_to_array(dict, size):
 	for (x, y), value in dict.items():
 		array[y][x] = value
 	return array
+
+
+def get_key(dict, needle):
+	for key, value in dict.items():
+		if value == needle:
+			return key
+	return None

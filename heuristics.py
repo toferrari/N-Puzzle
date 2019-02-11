@@ -1,6 +1,8 @@
 # coding: utf-8
 
 from math import sqrt
+from utils import get_key
+
 
 
 def manhattan(state, final_state):
@@ -29,4 +31,32 @@ def euclid(state, final_state):
 	return ret
 
 
-choices = {"manhattan": manhattan, "hamming": hamming, "euclid": euclid}
+def linear_conflict(state, final_state):
+	ret = 0
+	size = len(state)
+	keys = list(state.keys())
+	for index, key_j in enumerate(keys):
+		if index + 1 < size:
+			key_k = keys[index + 1]
+			if key_j[1] == key_k[1] and state[key_j] != state[key_k] and state[key_j] != 0 and state[key_k] != 0:
+				goal_key_j = get_key(final_state, state[key_j])
+				goal_key_k = get_key(final_state, state[key_k])
+				if key_j[1] == goal_key_j[1] and key_j[1] == goal_key_k[1]:
+					ret += 1
+	keys.sort(key=lambda x: x[0])
+	for index, key_j in enumerate(keys):
+		if index + 1 < size:
+			key_k = keys[index + 1]
+			if key_j[0] == key_k[0] and state[key_j] != state[key_k] and state[key_j] != 0 and state[key_k] != 0:
+				goal_key_j = get_key(final_state, state[key_j])
+				goal_key_k = get_key(final_state, state[key_k])
+				if key_j[0] == goal_key_j[0] and key_j[0] == goal_key_k[0]:
+					ret += 1
+	return manhattan(state, final_state) + 2 * ret
+
+
+choices = {"manhattan": manhattan,
+           "hamming": hamming,
+		   "euclid": euclid,
+		   "linear_conflict": linear_conflict
+		   }
