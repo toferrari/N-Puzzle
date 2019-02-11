@@ -58,17 +58,17 @@ class Game():
 
 
 	def _output_result(self):
+		results = []
 		elem = next((node for node in list(self._closed_list) if node == self._goal), None)
-		moves = -1
 		while elem != None:
-			moves += 1
-			# print(utils._convert_to_array(elem.state, elem.size), "---> ", elem.g_x)
+			results.append(elem.parent)
 			elem = elem.parent
 		print("Resolved !")
-		print("Number of moves: ", moves)
+		print("Number of moves: ", len(results))
 		print("Number of loops: ", self._n_loop)
 		print("Time complexity: ", self._total_states)
 		print("Space complexity: ", self._max_states)
+		return results
 
 
 	def _pop_max(self, size):
