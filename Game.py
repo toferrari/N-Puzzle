@@ -26,11 +26,16 @@ class Game():
 		self._max_states = 0
 		self._total_states = 0
 		self._n_loop = 0
+		self.results = None
 
 
 	def __del__(self):
 		if self.is_solvable:
 			print("time n-puzzle {:.2f}s".format(time() - self._start_time))
+
+
+	def __str__(self):
+		return "Puzzle: \n%s" % self._start
 
 
 	def _is_solvable(self):
@@ -57,18 +62,12 @@ class Game():
 		return i1 % 2 == i2 % 2
 
 
-	def _output_result(self):
-		results = []
+	def _generate_results(self):
+		self.results = []
 		elem = next((node for node in list(self._closed_list) if node == self._goal), None)
 		while elem != None:
-			results.append(elem.parent)
+			self.results.append(elem.parent)
 			elem = elem.parent
-		print("Resolved !")
-		print("Number of moves: ", len(results))
-		print("Number of loops: ", self._n_loop)
-		print("Time complexity: ", self._total_states)
-		print("Space complexity: ", self._max_states)
-		return results
 
 
 	def _pop_max(self, size):
@@ -103,8 +102,17 @@ class Game():
 			n_states = len(self._open_list)
 			self._pop_max(n_states)
 			self._max_states = max(n_states, self._max_states)
-		self._output_result()
+		self._generate_results()
 
+
+	def print_results(self):
+		to_print = {
+		 "Number of moves: ": len(self.results),
+		 "Number of loops: ": self._n_loop,
+		 "Time complexity: ": self._total_states,
+		 "Space complexity: ": self._max_states
+		}
+		print("\n".join("%s%s" % (key, value) for (key, value) in to_print.items()))
 
 	@staticmethod
 	def make_goal(s):

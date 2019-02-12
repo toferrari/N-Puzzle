@@ -38,6 +38,23 @@ class State():
 		return hash(frozenset(self.state.items()))
 
 
+	def __str__(self):
+		def get_border(highest_int, size):
+			ret = " +"
+			ret += "+".join("-"*(highest_int + 2) for _ in range(self.size))
+			ret += "+\n"
+			return ret
+
+		highest_int = len(str(self.state[max(self.state.keys(), key=lambda key:self.state[key])]))
+		border = get_border(highest_int, self.size)
+		ret = border
+		for x in range(self.size):
+			for y in range(self.size):
+				ret += " | %-*i" % (highest_int - len(str(self.state[(x, y)])) + 1, self.state[(x, y)])
+			ret += " |\n%s" % border
+		return ret
+
+
 	def _can_shift(self, direction=None):
 		if self.direction != None:
 			self.direction = direction
