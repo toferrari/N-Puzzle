@@ -1,39 +1,43 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys
+import subprocess
 import argparse
+import re
 
 import heuristics
-from Board import Board
-from EnumMove import Move
+import utils
 from State import State
-from solve import solve
-from parse import parse
-from error import error
-from check_soluble import check_soluble
+from Game import Game
+from parse import get_puzzle
 
 
-def helper():
-	print ("Wrong enter.\n")
-	print ("python3 N-Puzzle [-][option] [puzzle]")
-	print ("\t-m : manhattan heuristic")
-	print ("\t-v : graphic vision")
+def parse(arg_file):
+	with arg_file as file:
+		lines = file.readlines()
+	return lines
 
 
 if __name__ == "__main__" :
-	if (len(sys.argv) == 1 or len(sys.argv) > 3):
-		helper()
-
 	parser = argparse.ArgumentParser()
-
-	parser.add_argument("-m", "--manhattan", action="store_true", default=False, help="Use manhattan heuristic.")
-	parser.add_argument('file', type=argparse.FileType('r'))
-
+	h_choices = list(heuristics.choices.keys())
+	parser.add_argument("--heuristic", choices=h_choices, default=h_choices[0], help="Set a heuristic function.")
+	parser.add_argument("-s", "--size", type=int, default=3, help="Generate a n-puzzle of size")
+	parser.add_argument("-m", "--max_size", type=int, default=32, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
+	parser.add_argument('file', nargs='?', type=argparse.FileType('r'))
 	args = parser.parse_args()
-	puzzle = parse(args.file)
-	initial_state = State(puzzle)
-	check_soluble(initial_state)
-	initial_state.final_state = State.to_final_puzzle(puzzle)
-	initial_state.calculate_heuristics(heuristics.manhattan)
-	solve(initial_state, initial_state.final_state)
+
+	if args.file:
+		lines = [re.sub('\n', '', line) for line in parse(args.file)]
+	else:
+		command = "./Puzzle/npuzzle-gen.py -s {}".format(args.size)
+		lines = subprocess.check_output(command, shell=True, universal_newlines=True)[:-1].split('\n')
+
+	args.heuristic = heuristics.choices[args.heuristic]
+	puzzle = get_puzzle(lines)
+	game = Game(utils._convert_puzzle_to_dict(puzzle), len(puzzle), heuristic=args.heuristic, max_size=args.max_size)
+	print("Game is solvable ? {}".format("Yes" if game.is_solvable else "no"))
+	print(game)
+	if game.is_solvable:
+		game.solve()
+		game.print_results()
