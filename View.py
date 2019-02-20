@@ -39,13 +39,10 @@ class View():
         loop = 0
         self.canvas = tk.Canvas(root, width=self.size_image,
                                     height=self.size_image, background='black')
-        # self.canvas.pack()
         self.canvas.pack()
-        # self.canvas.grid()
         for y in range(self.size_game):
             for x in range(self.size_game):
                 tmp = self.puzzle[loop]
-        # for i in range(len(self.piece_puzzle)):
                 self.piece_puzzle[tmp]['x'] = round(x*self.size_image/self.size_game) + x*3
                 self.piece_puzzle[tmp]['y'] = round(y*self.size_image/self.size_game) + y*3
                 if (self.piece_puzzle[tmp]['visible'] == True):
@@ -53,12 +50,4 @@ class View():
                     self.piece_puzzle[tmp]['y'],
                     image=self.piece_puzzle[tmp]['image'],
                     anchor=NW)
-                #     self.new_image.paste(self.piece_puzzle[tmp]['image'], (self.piece_puzzle[tmp]['x'],self.piece_puzzle[tmp]['y']))
                 loop+=1
-        # loop = 0
-        # x = self.piece_puzzle[0]['x']
-        # y = self.piece_puzzle[0]['y']
-        # tmp = self.piece_puzzle[10]['image']
-        #         if (tmp != 0):
-        #             self.new_image.paste(self.puzzle_split[tmp - 1], (round(x*self.size_image/self.size_game) + x*3, round(y*self.size_image/self.size_game) + y*3))
-        #         loop += 1
