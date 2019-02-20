@@ -6,6 +6,8 @@ import tkinter as tk
 from Game import *
 from PIL import Image
 from PIL import ImageTk
+from error import error
+
 class View():
 
 
@@ -54,7 +56,11 @@ class View():
 
     def create_events(self):
         self.canvas.bind_all('<KeyPress-space>', self.move_puzzle)
+        self.canvas.bind_all('<KeyPress-Escape>', self.move_puzzle)
 
     def move_puzzle(self, event):
-        print (self.way[-1].direction)
+        if (event.keysym == 'Escape'):
+            error("You press Escape in game.")
+        # self.canvas.move(self.piece_puzzle[0], 0, 0)
+        self.canvas.move(self.piece_puzzle[1], 0, 0)
         print('ok')

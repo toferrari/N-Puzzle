@@ -13,7 +13,10 @@ from Game import Game
 from parse import get_puzzle
 
 from tkinter import *
+import tkinter as tk
 from View import View
+from PIL import Image
+from PIL import ImageTk
 
 def parse(arg_file):
 	with arg_file as file:
@@ -45,9 +48,16 @@ if __name__ == "__main__" :
 		game.solve()
 		game.print_results()
 
-	window = Tk()
+	root = Tk()
 	path_pic = "pc.jpg"
-	display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle))
+	display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle),
+															root, game.results)
 	display.split()
-	display.creat_puzzle()
-	display.new_image.show()
+	display.create_puzzle()
+	# display.new_image.show()
+	# root.mainloop()
+	# root = tk.Tk()
+	# img = ImageTk.PhotoImage(Image.open(path_pic))
+	# panel = tk.Label(root, image = img)
+	# panel.pack(side = "bottom", fill = "both", expand = "yes")
+	root.mainloop()
