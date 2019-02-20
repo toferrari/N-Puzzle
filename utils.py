@@ -7,7 +7,7 @@ def _convert_puzzle_to_dict(puzzle):
 	map = {}
 	for x, row in enumerate(puzzle):
 		for y, cell in enumerate(row):
-			map[(y, x)] = cell
+			map[(x, y)] = cell
 	return map
 
 
@@ -15,14 +15,14 @@ def _convert_list_to_dict(list, size):
 	map = {}
 	for y in range(size):
 		for x in range(size):
-			map[(y, x)] = list[x * size + y]
+			map[(x, y)] = list[x * size + y]
 	return map
 
 
 def _convert_to_array(dict, size):
 	array = np.array([0] * size * size).reshape(size, size)
 	for (x, y), value in dict.items():
-		array[y][x] = value
+		array[x][y] = value
 	return array
 
 

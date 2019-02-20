@@ -7,10 +7,10 @@ from EnumMove import Move
 
 
 directions = {
-	Move.UP: (-1, 0),
-	Move.DOWN: (1, 0),
-	Move.LEFT: (0, -1),
-	Move.RIGHT: (0, 1)
+	Move.UP: (0, -1),
+	Move.DOWN: (0, 1),
+	Move.LEFT: (-1, 0),
+	Move.RIGHT: (1, 0)
 }
 
 
@@ -55,13 +55,11 @@ class State():
 		return ret
 
 
-	def _can_shift(self, direction=None):
-		if self.direction != None:
-			self.direction = direction
-		return not ((self.direction == Move.UP and self.blank['y'] == 0)\
-			or (self.direction == Move.DOWN and self.blank['y'] == self.size - 1) \
-			or (self.direction == Move.LEFT and self.blank['x'] == 0)\
-			or (self.direction == Move.RIGHT and self.blank['x'] == self.size - 1))
+	def _can_shift(self, direction):
+		return not ((direction == Move.UP and self.blank['y'] == 0)\
+			or (direction == Move.DOWN and self.blank['y'] == self.size - 1) \
+			or (direction == Move.LEFT and self.blank['x'] == 0)\
+			or (direction == Move.RIGHT and self.blank['x'] == self.size - 1))
 
 
 	def find(self, value = 0):
@@ -75,7 +73,6 @@ class State():
 			State(self.state.copy(),
 			  size=self.size,
 			  g_x=self.g_x + 1,
-			  direction=direction,
 			  parent=self
 			).shift(direction)
 			for direction in Move
@@ -88,14 +85,21 @@ class State():
 			raise ValueError("Argument should be of type <enum Move>.")
 		if self._can_shift(direction):
 			x1, y1 = self.blank['x'], self.blank['y']
-			for key, (y2, x2) in directions.items():
+			for key, (x2, y2) in directions.items():
 				if key == direction:
-					y, x = y1 + y2, x1 + x2
+					x, y = x1+ x2, y1 + y2
 					tmp_cell = self.state[(x1, y1)]
 					self.state[(x1, y1)] = self.state[(x, y)]
 					self.state[(x, y)] = tmp_cell
+					self.blank = {"x": x, "y": y}
 					break
 		return self
+
+	def set_direction(self, other):
+		for direction, (y, x) in directions.items():
+			if other.blank['y'] - y == self.blank['y'] and other.blank['x'] -	 x == self.blank['x']:
+				self.direction = direction
+				break
 
 
 	def calculate_heuristics(self, goal, heuristic):
