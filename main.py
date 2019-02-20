@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import numpy as np
 import subprocess
 import argparse
 import re
@@ -11,6 +12,8 @@ from State import State
 from Game import Game
 from parse import get_puzzle
 
+from tkinter import *
+from View import View
 
 def parse(arg_file):
 	with arg_file as file:
@@ -41,3 +44,10 @@ if __name__ == "__main__" :
 	if game.is_solvable:
 		game.solve()
 		game.print_results()
+
+	window = Tk()
+	path_pic = "pc.jpg"
+	test = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle))
+	test.split()
+	test.creat_puzzle()
+	test.new_image.show()
