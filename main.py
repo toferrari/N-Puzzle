@@ -47,7 +47,7 @@ if __name__ == "__main__" :
 
 	window = Tk()
 	path_pic = "pc.jpg"
-	test = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle))
-	test.split()
-	test.creat_puzzle()
-	test.new_image.show()
+	display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle))
+	display.split()
+	display.creat_puzzle()
+	display.new_image.show()
