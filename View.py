@@ -38,7 +38,7 @@ class View():
     def create_puzzle(self, root):
         loop = 0
         self.canvas = tk.Canvas(root, width=self.size_image,
-                                    height=self.size_image, background='black')
+                                    height=self.size_image + 100, background='black')
         self.canvas.pack()
         for y in range(self.size_game):
             for x in range(self.size_game):
@@ -51,3 +51,5 @@ class View():
                     image=self.piece_puzzle[tmp]['image'],
                     anchor=NW)
                 loop+=1
+
+    # def move_puzzle():
