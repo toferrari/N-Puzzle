@@ -13,18 +13,23 @@ class View():
 
 
     def __init__(self, path, size_game, puzzle, root, way):
-        self.image = Image.open(path)
-        self.size_game = size_game
-        self.size_image = self.image.size[0]
-        self.puzzle = puzzle
-        self.canvas = tk.Canvas(root, width=self.size_image,
-                                    height=self.size_image, background='white')
-        self.canvas.pack()
-        self.piece_puzzle = [0]*self.size_game**2
-        self.puzzle_goal = Game.make_goal(self.size_game)
-        self.way = way
-        self.n_move = 0
-        self.create_events()
+        try:
+            self.image = Image.open(path)
+            self.image = self.image.resize((1024, 1024), Image.ANTIALIAS)
+            self.size_game = size_game
+            self.size_image = self.image.size[0]
+            print(self.size_image)
+            self.puzzle = puzzle
+            self.canvas = tk.Canvas(root, width=self.size_image,
+                                        height=self.size_image, background='white')
+            self.canvas.pack()
+            self.piece_puzzle = [0]*self.size_game**2
+            self.puzzle_goal = Game.make_goal(self.size_game)
+            self.way = way
+            self.n_move = 0
+            self.create_events()
+        except:
+            error("Error : could not open image: %s"%path)
 
     def split(self):
         loop = 0
