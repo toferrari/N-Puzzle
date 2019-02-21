@@ -38,7 +38,7 @@ if __name__ == "__main__" :
 	if args.file:
 		lines = [re.sub('\n', '', line) for line in parse(args.file)]
 	else:
-		command = "./Puzzle/npuzzle-gen.py -s {}".format(args.size)
+		command = "./npuzzle-gen.py -s {}".format(args.size)
 		lines = subprocess.check_output(command, shell=True, universal_newlines=True)[:-1].split('\n')
 
 	if (len(lines) < 4):
