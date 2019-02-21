@@ -29,11 +29,6 @@ class Game():
 		self.results = None
 
 
-	def __del__(self):
-		if self.is_solvable:
-			print("time n-puzzle {:.2f}s".format(time() - self._start_time))
-
-
 	def __str__(self):
 		return "Puzzle: \n%s" % self._start
 
@@ -75,6 +70,10 @@ class Game():
 			if index + 1 == size\
 			else result.set_direction(self.results[index + 1])\
 		for index, result in enumerate(self.results)]
+		if self.is_solvable:
+			print("time n-puzzle {:.2f}s".format(time() - self._start_time))
+
+
 
 
 	def _pop_max(self, size):
