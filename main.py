@@ -48,12 +48,10 @@ if __name__ == "__main__" :
 	if game.is_solvable:
 		game.solve()
 		game.print_results()
-
-	if (args.view):
-		root = Tk()
-		path_pic = "pc.jpg"
-		display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle),
-																root, game.get_winning_path())
-		display.split()
-		display.create_puzzle()
-		root.mainloop()
+		if (args.view):
+			root = Tk()
+			path_pic = "pc.jpg"
+			display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle), root, game.get_winning_path())
+			display.split()
+			display.create_puzzle()
+			root.mainloop()
