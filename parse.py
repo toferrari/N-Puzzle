@@ -47,15 +47,42 @@ def check_duplicate(puzzle, lines):
 	if (zero == 0):
 		error("No blank.")
 
+def custom_isdigit(line):
+	for letter in line:
+		if (not letter.isdigit() and letter != ' '):
+			return False
+	return True
+
+def check_order_number(puzzle):
+	puzzle.sort()
+	for index, number in enumerate(puzzle):
+		if (index == len(puzzle) - 1):
+			pass
+		elif (index > 0 and puzzle[index] -1 != puzzle[index - 1]):
+			error("Error number don't follow next by +1")
+
 def get_puzzle(lines):
+	needle = -1
+	for index, line in enumerate(lines):
+		try:
+			needle = line.index('#')
+			lines[index] = line[:needle].strip()
+		except ValueError:
+			continue
+		finally:
+			# print(needle, lines[index])
+			if needle != 0 and not lines[index]:
+				error("Empty line.")
+			if (not custom_isdigit(lines[index])):
+				error ("Got an invalid character")
+
 	lines = list(map(lambda line : line.split(' '), lines))
 	lines = list(map(lambda line : lamdba_remove_list_empty(line), lines))
-	lines = list(map(lambda line : remove_htag(line), lines))
 	size = 0
 	line_puzzle = 0
 	for line in lines:
-		if (line[0] == "#" or line[0] == '#\n'):
-			pass
+		if (not line):
+			continue
 		elif (len(line) == 1 and size == 0):
 			size = convert_int(line[0])
 			if size < 3 or np.isnan(size):
@@ -70,4 +97,5 @@ def get_puzzle(lines):
 	if (size != line_puzzle):
 		error ("Size is different than numbers of rows.")
 	check_duplicate(puzzle, lines)
+	check_order_number(puzzle.flatten())
 	return puzzle

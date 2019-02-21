@@ -40,6 +40,8 @@ if __name__ == "__main__" :
 		command = "./Puzzle/npuzzle-gen.py -s {}".format(args.size)
 		lines = subprocess.check_output(command, shell=True, universal_newlines=True)[:-1].split('\n')
 
+	if (len(lines) < 4):
+		exit()
 	args.heuristic = heuristics.choices[args.heuristic]
 	puzzle = get_puzzle(lines)
 	game = Game(utils._convert_puzzle_to_dict(puzzle), len(puzzle), heuristic=args.heuristic, max_size=args.max_size)
