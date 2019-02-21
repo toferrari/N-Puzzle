@@ -116,6 +116,8 @@ class Game():
 			with open(filename, 'w') as f:
 				for result in self.results:
 					f.write("%s\n"%result)
+				f.write("%s\n"%self._goal)
+
 		except PermissionError:
 			print("Error: Could not write in file: %s"%filename)
 
