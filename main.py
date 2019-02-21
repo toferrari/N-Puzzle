@@ -31,6 +31,7 @@ if __name__ == "__main__" :
 	parser.add_argument("-s", "--size", type=int, default=3, help="Generate a n-puzzle of size")
 	parser.add_argument("-m", "--max_size", type=int, default=32, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
 	parser.add_argument("-v", "--view", action="store_true", default=False, help="graphic visualization")
+	parser.add_argument("-i", "--image", type=str, default="pc.jpg", help="Path for an image.")
 	parser.add_argument('file', nargs='?', type=argparse.FileType('r'))
 	args = parser.parse_args()
 
@@ -52,7 +53,7 @@ if __name__ == "__main__" :
 		game.print_results()
 		if (args.view):
 			root = Tk()
-			path_pic = "pc.jpg"
+			path_pic = args.image
 			display = View(path_pic, len(puzzle), utils._convert_puzzle_to_list(puzzle), root, game.get_winning_path())
 			display.split()
 			display.create_puzzle()

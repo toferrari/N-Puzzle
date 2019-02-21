@@ -18,7 +18,6 @@ class View():
             self.image = self.image.resize((1024, 1024), Image.ANTIALIAS)
             self.size_game = size_game
             self.size_image = self.image.size[0]
-            print(self.size_image)
             self.puzzle = puzzle
             self.canvas = tk.Canvas(root, width=self.size_image,
                                         height=self.size_image, background='white')
