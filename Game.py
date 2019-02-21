@@ -66,8 +66,15 @@ class Game():
 		self.results = []
 		elem = next((node for node in list(self._closed_list) if node == self._goal), None)
 		while elem != None:
-			self.results.append(elem.parent)
+			if elem.parent:
+				self.results.append(elem.parent)
 			elem = elem.parent
+		self.results.reverse()
+		size = len(self.results)
+		[result.set_direction(self._goal)\
+			if index + 1 == size\
+			else result.set_direction(self.results[index + 1])\
+		for index, result in enumerate(self.results)]
 
 
 	def _pop_max(self, size):
@@ -113,6 +120,13 @@ class Game():
 		 "Space complexity: ": self._max_states
 		}
 		print("\n".join("%s%s" % (key, value) for (key, value) in to_print.items()))
+
+
+	def get_winning_path(self):
+		if self.results == None:
+			return None
+		return [result.direction for result in self.results]
+
 
 	@staticmethod
 	def make_goal(s):
