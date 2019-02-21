@@ -53,7 +53,7 @@ if __name__ == "__main__" :
 		if (args.view):
 			root = Tk()
 			path_pic = "pc.jpg"
-			display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle), root, game.get_winning_path())
+			display = View(path_pic, len(puzzle), utils._convert_puzzle_to_list(puzzle), root, game.get_winning_path())
 			display.split()
 			display.create_puzzle()
 			root.mainloop()
