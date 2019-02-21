@@ -112,15 +112,24 @@ class Game():
 		self._generate_results()
 
 
+	def _print_states_in_file(self, filename="results.txt"):
+		try:
+			with open(filename, 'w') as f:
+				for result in self.results:
+					f.write("%s\n"%result)
+		except PermissionError:
+			print("Error: Could not write in file: %s"%filename)
+
+
 	def print_results(self):
 		to_print = {
 		 "Number of moves: ": len(self.results),
 		 "Number of loops: ": self._n_loop,
 		 "Time complexity: ": self._total_states,
-		 "Space complexity: ": self._max_states
+		 "Size complexity: ": self._max_states
 		}
 		print("\n".join("%s%s" % (key, value) for (key, value) in to_print.items()))
-
+		self._print_states_in_file()
 
 	def get_winning_path(self):
 
