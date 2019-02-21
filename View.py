@@ -21,7 +21,6 @@ class View():
                                     height=self.size_image, background='white')
         self.canvas.pack()
         self.piece_puzzle = [0]*self.size_game**2
-        self.new_image = Image.new('RGB', (self.size_image + (3*self.size_game), self.size_image + (3*self.size_game)))
         self.puzzle_goal = Game.make_goal(self.size_game)
         self.way = way
         self.n_move = 0
