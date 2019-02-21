@@ -6,7 +6,7 @@ import numpy as np
 import heuristics
 import utils
 from EnumMove import Move
-from State import State
+from State import State, directions
 
 class Game():
 
@@ -123,9 +123,15 @@ class Game():
 
 
 	def get_winning_path(self):
+
+		def moving_number(result):
+			for direction, (y, x) in directions.items():
+				if result.direction == direction:
+					return result.state[(result.blank['x'] + x, result.blank['y'] + y)]
+
 		if self.results == None:
 			return None
-		return [result.direction for result in self.results]
+		return [(result.direction, moving_number(result)) for result in self.results]
 
 
 	@staticmethod
