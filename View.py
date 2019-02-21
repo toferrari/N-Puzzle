@@ -62,7 +62,7 @@ class View():
         self.canvas.bind_all('<KeyPress-space>', self.move_puzzle)
         self.canvas.bind_all('<KeyPress-Escape>', self.move_puzzle)
 
-    def _up date_coordinates(self, piece):
+    def _update_coordinates(self, piece):
         self.piece_puzzle[piece]['y'], self.piece_puzzle[0]['y'] =\
         self.piece_puzzle[0]['y'], self.piece_puzzle[piece]['y']
         self.piece_puzzle[piece]['x'], self.piece_puzzle[0]['x'] =\
