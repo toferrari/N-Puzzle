@@ -82,5 +82,5 @@ class View():
         elif (move == Move.RIGHT or move == Move.LEFT):
             coor = (self.piece_puzzle[0]['x']-self.piece_puzzle[piece]['x'], 0)
             self.canvas.move(self.piece_puzzle[piece]['id_canvas'], *coor)
-        self._upadate_coordinates(piece)
+        self._update_coordinates(piece)
         self.n_move += 1
