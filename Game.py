@@ -6,7 +6,7 @@ import numpy as np
 import heuristics
 import utils
 from EnumMove import Move
-from State import State
+from State import State, directions
 
 class Game():
 
@@ -66,8 +66,15 @@ class Game():
 		self.results = []
 		elem = next((node for node in list(self._closed_list) if node == self._goal), None)
 		while elem != None:
-			self.results.append(elem.parent)
+			if elem.parent:
+				self.results.append(elem.parent)
 			elem = elem.parent
+		self.results.reverse()
+		size = len(self.results)
+		[result.set_direction(self._goal)\
+			if index + 1 == size\
+			else result.set_direction(self.results[index + 1])\
+		for index, result in enumerate(self.results)]
 
 
 	def _pop_max(self, size):
@@ -113,6 +120,19 @@ class Game():
 		 "Space complexity: ": self._max_states
 		}
 		print("\n".join("%s%s" % (key, value) for (key, value) in to_print.items()))
+
+
+	def get_winning_path(self):
+
+		def moving_number(result):
+			for direction, (y, x) in directions.items():
+				if result.direction == direction:
+					return result.state[(result.blank['x'] + x, result.blank['y'] + y)]
+
+		if self.results == None:
+			return None
+		return [(result.direction, moving_number(result)) for result in self.results]
+
 
 	@staticmethod
 	def make_goal(s):
