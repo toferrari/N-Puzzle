@@ -30,6 +30,7 @@ if __name__ == "__main__" :
 	parser.add_argument("--heuristic", choices=h_choices, default=h_choices[0], help="Set a heuristic function.")
 	parser.add_argument("-s", "--size", type=int, default=3, help="Generate a n-puzzle of size")
 	parser.add_argument("-m", "--max_size", type=int, default=32, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
+	parser.add_argument("-v", "--view", action="store_true", default=False, help="graphic visualization")
 	parser.add_argument('file', nargs='?', type=argparse.FileType('r'))
 	args = parser.parse_args()
 
@@ -48,16 +49,11 @@ if __name__ == "__main__" :
 		game.solve()
 		game.print_results()
 
-	root = Tk()
-	path_pic = "pc.jpg"
-	display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle),
-															root, game.results)
-	display.split()
-	display.create_puzzle()
-	# display.new_image.show()
-	# root.mainloop()
-	# root = tk.Tk()
-	# img = ImageTk.PhotoImage(Image.open(path_pic))
-	# panel = tk.Label(root, image = img)
-	# panel.pack(side = "bottom", fill = "both", expand = "yes")
-	root.mainloop()
+	if (args.view):
+		root = Tk()
+		path_pic = "pc.jpg"
+		display = View(path_pic, game._size, utils._convert_puzzle_to_list(puzzle),
+																root, game.get_winning_path())
+		display.split()
+		display.create_puzzle()
+		root.mainloop()
