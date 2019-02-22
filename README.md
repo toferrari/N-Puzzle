@@ -1,1 +1,3 @@
 # N-Puzzle
+
+![](giphy.gif)
