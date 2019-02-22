@@ -86,5 +86,7 @@ class View():
         elif (move == Move.RIGHT or move == Move.LEFT):
             coor = (self.piece_puzzle[0]['x']-self.piece_puzzle[piece]['x'], 0)
             self.canvas.move(self.piece_puzzle[piece]['id_canvas'], *coor)
+        save = "gif/save_" + str(index) + ".jpg"
+        self.canvas.postscript(file=save, height=1024, width=1024)
         self._update_coordinates(piece)
         self.n_move += 1
