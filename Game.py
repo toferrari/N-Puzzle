@@ -5,9 +5,7 @@ import numpy as np
 
 import heuristics
 import utils
-from heapq import heappop, heappush, nlargest, heapify
-from collections import deque
-from Dqueue import Dqueue
+from heapq import heappop, heappush, nlargest, nsmallest, heapify
 from EnumMove import Move
 from State import State, directions
 
@@ -79,28 +77,22 @@ class Game():
 
 
 	def _pop_max(self, size):
-		self._max_size = 32
 		n = size - self._max_size
 		if self._max_size < 0 or n < 1:
 			return
-		# print(n)
-		self._open_heap = nlargest(n, self._open_heap)
+		to_delete = nlargest(n, self._open_heap)
+		self._open_heap = [x for x in self._open_heap if x not in to_delete]
 		heapify(self._open_heap)
 
 
 	def solve(self):
 		current = None
-		# queue = Dqueue(maxlen=self._max_size)
-		# queue.appendleft(self._start)
-		# queue = PriorityQueue(maxsize=self._max_size)
-		heappush(self._open_heap, (self._start.f_x, self._start))
+		heappush(self._open_heap, self._start)
 		self._closed_list = set()
 
 		n_states = 1
 		while n_states > 0:
-			# current = queue.pop()
-			node = heappop(self._open_heap)
-			current = node[1]
+			current = heappop(self._open_heap)
 			self._closed_list.add(current)
 			if current == self._goal:
 				break
@@ -110,14 +102,11 @@ class Game():
 				if neighbour in self._closed_list:
 					continue
 				neighbour.calculate_heuristics(self._goal, self._heuristic)
-				# queue.append(neighbour)
-				heappush(self._open_heap, (neighbour.f_x, neighbour))
+				heappush(self._open_heap, neighbour)
 			self._n_loop += 1
-			# queue.sort()
-			# n_states = len(queue)
 			n_states = len(self._open_heap)
 			self._pop_max(n_states)
-			self._max_states = max(n_states, self._max_states)
+			self._max_states = max(self._max_size if self._max_size else n_states, self._max_states)
 		self._generate_results()
 
 

@@ -33,7 +33,7 @@ if __name__ == "__main__" :
 	h_choices = list(heuristics.choices.keys())
 	parser.add_argument("--heuristic", choices=h_choices, default=h_choices[0], help="Set a heuristic function.")
 	parser.add_argument("-s", "--size", type=int, default=3, help="Generate a n-puzzle of size")
-	parser.add_argument("-m", "--max_size", type=int, default=32, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
+	parser.add_argument("-m", "--max_size", type=int, default=200, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
 	parser.add_argument("-v", "--view", action="store_true", default=False, help="graphic visualization")
 	parser.add_argument("-i", "--image", type=str, default="pc.jpg", help="Path for an image.")
 	parser.add_argument('file', nargs='?', type=argparse.FileType('r'))
