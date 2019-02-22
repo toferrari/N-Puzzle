@@ -91,7 +91,7 @@ class Game():
 
 	def solve(self):
 		current = None
-		queue = Dqueue()
+		queue = Dqueue(maxlen=self._max_size)
 		queue.appendleft(self._start)
 		# queue = PriorityQueue(maxsize=self._max_size)
 		# heappush(self._open_heap, (self._start.f_x, self._start))
@@ -99,7 +99,7 @@ class Game():
 
 		n_states = 1
 		while n_states > 0:
-			current = queue.popleft()
+			current = queue.pop()
 			# node = heappop(self._open_heap)
 			# current = node[1]
 			self._closed_list.add(current)
@@ -112,10 +112,9 @@ class Game():
 					continue
 				neighbour.calculate_heuristics(self._goal, self._heuristic)
 				queue.append(neighbour)
-				# heappush(self._open_heap, (neighbour.f_x, neighbour))
 			self._n_loop += 1
-			n_states = len(queue)
 			queue.sort()
+			n_states = len(queue)
 			self._max_states = max(n_states, self._max_states)
 		self._generate_results()
 
