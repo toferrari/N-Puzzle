@@ -5,6 +5,7 @@ import numpy as np
 
 import heuristics
 import utils
+from heapq import heappop, heappush
 from EnumMove import Move
 from State import State, directions
 
@@ -28,6 +29,7 @@ class Game():
 		self._n_loop = 0
 		self.results = None
 
+		self._open_heap = []
 
 	def __str__(self):
 		return "Puzzle: \n%s" % self._start
@@ -76,24 +78,24 @@ class Game():
 
 
 
-	def _pop_max(self, size):
-		if self._max_size < 8:
-			return
-		while size > 0 and size >= self._max_size:
-			to_pop = max(self._open_list, key=lambda node: node.f_x)
-			self._open_list.remove(to_pop)
-			size -= 1
+	# def _pop_max(self, size):
+	# 	if self._max_size < 8:
+	# 		return
+	# 	while size > 0 and size >= self._max_size:
+	# 		to_pop = max(self._open_list, key=lambda node: node.f_x)
+	# 		self._open_list.remove(to_pop)
+	# 		size -= 1
 
 
 	def solve(self):
 		current = None
-		self._open_list = set([self._start])
+		heappush(self._open_heap, (self._start.f_x, self._start))
 		self._closed_list = set()
 
 		n_states = 1
 		while n_states > 0:
-			current = min(self._open_list, key=lambda node: node.f_x)
-			self._open_list.remove(current)
+			node = heappop(self._open_heap)
+			current = node[1]
 			self._closed_list.add(current)
 			if current == self._goal:
 				break
@@ -103,10 +105,10 @@ class Game():
 				if neighbour in self._closed_list:
 					continue
 				neighbour.calculate_heuristics(self._goal, self._heuristic)
-				self._open_list.add(neighbour)
+				heappush(self._open_heap, (neighbour.f_x, neighbour))
 			self._n_loop += 1
-			n_states = len(self._open_list)
-			self._pop_max(n_states)
+			n_states = len(self._open_heap)
+			# self._pop_max(n_states)
 			self._max_states = max(n_states, self._max_states)
 		self._generate_results()
 

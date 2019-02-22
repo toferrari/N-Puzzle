@@ -33,6 +33,17 @@ class State():
 			return False
 		return self.state == other.state
 
+	def __le__(self, other):
+		return self.f_x <= other.f_x
+
+	def __lt__(self, other):
+		return self.f_x < other.f_x
+
+	def __ge__(self, other):
+		return self.f_x >= other.f_x
+
+	def __gt__(self, other):
+		return self.f_x > other.f_x
 
 	def __hash__(self):
 		return hash(frozenset(self.state.items()))
