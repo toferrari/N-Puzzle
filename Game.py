@@ -5,6 +5,7 @@ import numpy as np
 
 import heuristics
 import utils
+from heapq import heappop, heappush, nlargest, nsmallest, heapify
 from EnumMove import Move
 from State import State, directions
 
@@ -13,7 +14,7 @@ class Game():
 
 	def __init__(self, puzzle, size, heuristic=heuristics.manhattan, max_size=8):
 		self._size = size
-		self._max_size = max_size
+		self._max_size = max_size if max_size > 8 else 0
 		self._start = State(puzzle, size)
 		goal = Game.make_goal(size)
 		self._goal = State(utils._convert_list_to_dict(goal, size), size)
@@ -28,6 +29,7 @@ class Game():
 		self._n_loop = 0
 		self.results = None
 
+		self._open_heap = []
 
 	def __str__(self):
 		return "Puzzle: \n%s" % self._start
@@ -74,26 +76,23 @@ class Game():
 			print("time n-puzzle {:.2f}s".format(time() - self._start_time))
 
 
-
-
 	def _pop_max(self, size):
-		if self._max_size < 8:
+		n = size - self._max_size
+		if self._max_size < 0 or n < 1:
 			return
-		while size > 0 and size >= self._max_size:
-			to_pop = max(self._open_list, key=lambda node: node.f_x)
-			self._open_list.remove(to_pop)
-			size -= 1
+		to_delete = nlargest(n, self._open_heap)
+		self._open_heap = [x for x in self._open_heap if x not in to_delete]
+		heapify(self._open_heap)
 
 
 	def solve(self):
 		current = None
-		self._open_list = set([self._start])
+		heappush(self._open_heap, self._start)
 		self._closed_list = set()
 
 		n_states = 1
 		while n_states > 0:
-			current = min(self._open_list, key=lambda node: node.f_x)
-			self._open_list.remove(current)
+			current = heappop(self._open_heap)
 			self._closed_list.add(current)
 			if current == self._goal:
 				break
@@ -103,11 +102,11 @@ class Game():
 				if neighbour in self._closed_list:
 					continue
 				neighbour.calculate_heuristics(self._goal, self._heuristic)
-				self._open_list.add(neighbour)
+				heappush(self._open_heap, neighbour)
 			self._n_loop += 1
-			n_states = len(self._open_list)
+			n_states = len(self._open_heap)
 			self._pop_max(n_states)
-			self._max_states = max(n_states, self._max_states)
+			self._max_states = max(self._max_size if self._max_size else n_states, self._max_states)
 		self._generate_results()
 
 
