@@ -8,6 +8,7 @@ import re
 
 import heuristics
 import utils
+from error import error
 from State import State
 from Game import Game
 from parse import get_puzzle
@@ -19,8 +20,11 @@ from PIL import Image
 from PIL import ImageTk
 
 def parse(arg_file):
-	with arg_file as file:
-		lines = file.readlines()
+	try:
+		with arg_file as file:
+			lines = file.readlines()
+	except:
+		error("error file")
 	return lines
 
 

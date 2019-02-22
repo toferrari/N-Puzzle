@@ -7,6 +7,7 @@ from Game import *
 from EnumMove import Move
 from PIL import Image
 from PIL import ImageTk
+from PIL import ImageGrab
 from error import error
 
 class View():
