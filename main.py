@@ -68,7 +68,7 @@ if __name__ == "__main__" :
 		game.print_results()
 		if (args.view):
 			root = Tk()
-			path_pic = args.image if args.image else "./pc.jpg"
+			path_pic = args.image if args.image else "image/pc.jpg"
 			display = View(path_pic, len(puzzle), utils._convert_puzzle_to_list(puzzle), root, game.get_winning_path())
 			display.split()
 			display.create_puzzle()
