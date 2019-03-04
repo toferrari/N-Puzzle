@@ -4,6 +4,7 @@
 import numpy as np
 # from Game import Game
 from EnumMove import Move
+from EnumCost import Cost
 
 
 directions = {
@@ -113,6 +114,11 @@ class State():
 				break
 
 
-	def calculate_heuristics(self, goal, heuristic):
-		self.h_x = heuristic(self.state, goal.state)
+	def calculate_heuristics(self, goal, heuristic, cost):
+		if (cost != Cost.UNIFORM):
+			self.h_x = heuristic(self.state, goal.state)
+		if (cost == Cost.GREEDY):
+			self.g_x = 0
+		elif (cost == Cost.UNIFORM):
+			self.h_x = 0
 		self.f_x = self.g_x + self.h_x
