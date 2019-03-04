@@ -12,15 +12,16 @@ from State import State, directions
 class Game():
 
 
-	def __init__(self, puzzle, size, heuristic=heuristics.manhattan, max_size=8):
+	def __init__(self, puzzle, size, cost, heuristic=heuristics.manhattan, max_size=8):
 		self._size = size
 		self._max_size = max_size if max_size > 8 else 0
 		self._start = State(puzzle, size)
 		goal = Game.make_goal(size)
 		self._goal = State(utils._convert_list_to_dict(goal, size), size)
 		self._heuristic = heuristic
+		self.cost = cost
 
-		self._start.calculate_heuristics(self._goal, self._heuristic)
+		self._start.calculate_heuristics(self._goal, self._heuristic, self.cost)
 		self.is_solvable = self._is_solvable()
 
 		self._start_time = time()
@@ -101,7 +102,7 @@ class Game():
 			for neighbour in neighbours:
 				if neighbour in self._closed_list:
 					continue
-				neighbour.calculate_heuristics(self._goal, self._heuristic)
+				neighbour.calculate_heuristics(self._goal, self._heuristic, self.cost)
 				heappush(self._open_heap, neighbour)
 			self._n_loop += 1
 			n_states = len(self._open_heap)
