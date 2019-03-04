@@ -49,9 +49,8 @@ if __name__ == "__main__" :
 	else:
 		command = "./npuzzle-gen.py -s {}".format(args.size)
 		lines = subprocess.check_output(command, shell=True, universal_newlines=True)[:-1].split('\n')
-
-	if (len(lines) < 4):
-		exit()
+	if (not lines):
+		error("empty file")
 	args.heuristic = heuristics.choices[args.heuristic]
 	puzzle = get_puzzle(lines)
 	cost = Cost.BREADTH_FIRST
