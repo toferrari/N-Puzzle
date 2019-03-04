@@ -37,8 +37,8 @@ if __name__ == "__main__" :
 	parser.add_argument("-m", "--max_size", type=int, default=200, help="Max size of OPEN list. Lower than 8 means no limit.\nThe higher the number, the higher the complexity will be.")
 	parser.add_argument("-v", "--view", action="store_true", default=False, help="graphic visualization")
 	parser.add_argument("-i", "--image", type=str, default="pc.jpg", help="Path for an image.")
-	parser.add_argument("-g", "--greedy_search", type=bool, default=False, help="f(x) = h(x) | g(x) = 0")
-	parser.add_argument("-u", "--uniform_cost", type=bool, default=False, help="f(x) = g(x) | h(x) = 0")
+	parser.add_argument("-g", "--greedy_search", action="store_true", default=False, help="f(x) = h(x) | g(x) = 0")
+	parser.add_argument("-u", "--uniform_cost", action="store_true", default=False, help="f(x) = g(x) | h(x) = 0")
 	parser.add_argument('file', nargs='?', type=argparse.FileType('r'))
 	args = parser.parse_args()
 
